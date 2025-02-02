@@ -1,0 +1,12 @@
+.env
+*log
+*.log.*
+*.session
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+.DS_Store
+
