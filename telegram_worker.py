@@ -1,4 +1,3 @@
-# telegram_worker.py
 import threading
 import asyncio
 import queue

@@ -1,4 +1,3 @@
-# main.py
 import locale
 import os
 import json
