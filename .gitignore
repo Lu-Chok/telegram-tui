@@ -9,4 +9,5 @@ __pycache__
 *.pyw
 *.pyz
 .DS_Store
-
+config.py
+favorites.json
