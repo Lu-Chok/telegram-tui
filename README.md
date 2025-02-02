@@ -1,4 +1,4 @@
-# Telegram CLI client
+# Telegram Terminal UI
 
 ## Installation
 
