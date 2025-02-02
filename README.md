@@ -6,7 +6,7 @@
 pip3 install -r requirements.txt
 ```
 ## Update config.py
-Update config.py with your phone number, api id and api hash.
+Update config.py with your `phone number`, `api id` and `api hash`.
 
 
 ## Generate session (log in)
