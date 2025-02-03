@@ -202,8 +202,8 @@ class TelegramWorker:
             return None
         return None
 
-    def _create_ascii_art(self, image, max_width, max_height=None):
-        """Create ASCII art version of image"""
+    def _create_ascii_art(self, image, max_width, max_height=None, colored=True):
+        """Create ASCII art version of image with optional color"""
         try:
             logger.info(f"Creating ASCII art with dimensions {max_width}x{max_height}")
             
@@ -213,35 +213,35 @@ class TelegramWorker:
             
             if max_height:
                 # Calculate width based on height to preserve aspect ratio
-                # Each character is roughly twice as tall as it is wide
                 target_width = int(max_height * aspect_ratio * 2)
-                # Use the smaller of our calculated width or max_width
                 new_w = min(target_width, max_width)
             else:
                 new_w = max(40, min(max_width - 4, 120))
             
             logger.info(f"Adjusted width to {new_w} for aspect ratio {aspect_ratio}")
             
-            # Create ASCII art with basic settings
-            ascii_img_obj = ascii_magic.from_pillow_image(image)
+            # Set mode based on whether color is enabled
+            mode = ascii_magic.Mode.ANSI if colored else ascii_magic.Mode.ASCII
+            
+            # Create ASCII art with color (if enabled)
+            ascii_img_obj = ascii_magic.from_pillow_image(image, mode=mode)
             logger.info("Created ASCII art object")
             
             # Get ASCII with width ratio adjustment
             output = ascii_img_obj.to_ascii(
                 columns=new_w,
-                width_ratio=1.5  # Adjust for terminal character width/height ratio
+                width_ratio=1.5
             )
             
-            # Strip ANSI escape sequences
-            ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
-            clean_output = ansi_escape.sub('', str(output))
+            # If not using color, strip ANSI escape sequences
+            if not colored:
+                ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+                output = ansi_escape.sub('', str(output))
             
-            logger.info(f"Generated ASCII output, length: {len(clean_output)}")
-            return clean_output
-            
+            return output
         except Exception as e:
-            logger.error(f"Error creating ASCII art: {e}", exc_info=True)
-            return "[image conversion failed]"
+            logger.error(f"Error generating ASCII art: {e}")
+            return None
 
     async def load_chat_history(self, chat_id, limit=200, before_message_id=None):
         """Load chat history with pagination support"""
